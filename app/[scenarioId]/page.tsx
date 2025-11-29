@@ -14,6 +14,7 @@ export default function ScenarioPage() {
 
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
+  const [lastUserInput, setLastUserInput] = useState('');
   const [title, setTitle] = useState('');
   const [conversationHistory, setConversationHistory] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,6 +58,7 @@ export default function ScenarioPage() {
     if (!input.trim()) return;
 
     setIsLoading(true);
+    setLastUserInput(input);
 
     // Add user message to conversation history
     const userMessage: Message = { role: 'user', content: input };
@@ -83,15 +85,14 @@ export default function ScenarioPage() {
 
         // Display only the most recent output with fade animation
         setOutput(data.message);
-        setFadeKey(prev => prev + 1);
       } else {
         setOutput('Error: ' + (data.error || 'Unknown error'));
-        setFadeKey(prev => prev + 1);
       }
     } catch (error) {
       setOutput('Error: Failed to communicate with the game engine');
     } finally {
       setIsLoading(false);
+      setFadeKey(prev => prev + 1);
       setInput('');
     }
   };
@@ -100,12 +101,27 @@ export default function ScenarioPage() {
     <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6">
       <div className="w-full max-w-[900px] h-[calc(100vh-3rem)] flex flex-col gap-6">
         {/* Output Area */}
-        <div
-          key={fadeKey}
-          className="bg-neutral-900/50 border border-neutral-800 rounded-lg p-6 flex-1 flex items-center justify-center animate-fadeIn overflow-y-auto"
-        >
-          <div className="text-neutral-100 text-base leading-relaxed whitespace-pre-wrap max-w-prose font-mono">
-            {output || 'Loading...'}
+        <div className="bg-neutral-900/50 border border-neutral-800 rounded-lg p-6 flex-1 flex items-center justify-center overflow-y-auto">
+          <div
+            key={fadeKey}
+            className={`max-w-prose w-full ${isLoading ? 'animate-fadeOut' : 'animate-fadeIn'}`}
+          >
+            {isLoading ? (
+              <div className="text-neutral-500 text-base font-mono text-center">
+                ...
+              </div>
+            ) : (
+              <>
+                {lastUserInput && (
+                  <div className="text-neutral-500 text-sm font-mono mb-4">
+                    &gt; {lastUserInput}
+                  </div>
+                )}
+                <div className="text-neutral-100 text-base leading-relaxed whitespace-pre-wrap font-mono">
+                  {output || 'Loading...'}
+                </div>
+              </>
+            )}
           </div>
         </div>
 
