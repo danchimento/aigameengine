@@ -24,11 +24,15 @@ export async function GET(request: NextRequest) {
 
     const scenario = fs.readFileSync(scenarioPath, 'utf-8');
 
+    // Extract the title (first H1)
+    const titleMatch = scenario.match(/^#\s+(.+)$/m);
+    const title = titleMatch ? titleMatch[1].trim() : 'AI Game Engine';
+
     // Extract the opening section from the scenario
     const openingMatch = scenario.match(/## Opening\s*\n\s*\n([\s\S]*?)(?=\n\n##|$)/);
     const opening = openingMatch ? openingMatch[1].trim() : 'The game begins...';
 
-    return NextResponse.json({ opening });
+    return NextResponse.json({ title, opening });
   } catch (error) {
     console.error('Error loading opening:', error);
     return NextResponse.json(

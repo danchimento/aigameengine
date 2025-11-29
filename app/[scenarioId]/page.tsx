@@ -14,6 +14,7 @@ export default function ScenarioPage() {
 
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
+  const [title, setTitle] = useState('');
   const [conversationHistory, setConversationHistory] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [fadeKey, setFadeKey] = useState(0);
@@ -27,6 +28,10 @@ export default function ScenarioPage() {
         const data = await response.json();
         if (data.opening) {
           setOutput(data.opening);
+          const scenarioTitle = data.title || 'AI Game Engine';
+          setTitle(scenarioTitle);
+          // Update browser tab title
+          document.title = scenarioTitle;
         } else if (data.error) {
           setOutput(`Error: ${data.error}`);
         }
