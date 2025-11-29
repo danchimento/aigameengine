@@ -9,11 +9,25 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages } = await request.json();
+    const { messages, scenarioId } = await request.json();
 
     // Read the engine rules and scenario files
     const engineRulesPath = path.join(process.cwd(), 'engine-rules.md');
-    const scenarioPath = path.join(process.cwd(), 'scenario.md');
+
+    // Use scenarioId if provided, otherwise fall back to default scenario.md
+    let scenarioPath: string;
+    if (scenarioId) {
+      scenarioPath = path.join(process.cwd(), 'scenarios', `${scenarioId}.md`);
+      // Check if scenario file exists
+      if (!fs.existsSync(scenarioPath)) {
+        return NextResponse.json(
+          { error: `Scenario '${scenarioId}' not found` },
+          { status: 404 }
+        );
+      }
+    } else {
+      scenarioPath = path.join(process.cwd(), 'scenario.md');
+    }
 
     const engineRules = fs.readFileSync(engineRulesPath, 'utf-8');
     const scenario = fs.readFileSync(scenarioPath, 'utf-8');

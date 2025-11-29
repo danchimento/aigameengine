@@ -1,125 +1,69 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
-type Message = {
-  role: 'user' | 'assistant';
-  content: string;
+type Scenario = {
+  id: string;
+  title: string;
+  description: string;
 };
 
 export default function Home() {
-  const [input, setInput] = useState('');
-  const [output, setOutput] = useState('');
-  const [conversationHistory, setConversationHistory] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [scenarios, setScenarios] = useState<Scenario[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load the opening text when the page first loads
-    const loadOpening = async () => {
+    const loadScenarios = async () => {
       try {
-        const response = await fetch('/api/game/opening');
+        const response = await fetch('/api/scenarios');
         const data = await response.json();
-        if (data.opening) {
-          setOutput(data.opening);
+        if (data.scenarios) {
+          setScenarios(data.scenarios);
         }
       } catch (error) {
-        console.error('Failed to load opening:', error);
+        console.error('Failed to load scenarios:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    loadOpening();
-    textareaRef.current?.focus();
+    loadScenarios();
   }, []);
-
-  useEffect(() => {
-    if (!isLoading) {
-      textareaRef.current?.focus();
-    }
-  }, [isLoading]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!input.trim()) return;
-
-    setIsLoading(true);
-
-    // Add user message to conversation history
-    const userMessage: Message = { role: 'user', content: input };
-    const updatedHistory = [...conversationHistory, userMessage];
-
-    try {
-      const response = await fetch('/api/game', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: updatedHistory,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.message) {
-        // Add assistant message to conversation history
-        const assistantMessage: Message = { role: 'assistant', content: data.message };
-        setConversationHistory([...updatedHistory, assistantMessage]);
-
-        // Display only the most recent output
-        setOutput(data.message);
-      } else {
-        setOutput('Error: ' + (data.error || 'Unknown error'));
-      }
-    } catch (error) {
-      setOutput('Error: Failed to communicate with the game engine');
-    } finally {
-      setIsLoading(false);
-      setInput('');
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+        <h1 className="text-4xl font-bold mb-4 text-center text-gray-800">
           AI Game Engine
         </h1>
+        <p className="text-center text-gray-600 mb-12">
+          Choose a scenario to begin your adventure
+        </p>
 
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">Output</h2>
-          <div className="bg-gray-50 p-4 rounded min-h-[200px] whitespace-pre-wrap">
-            {output || 'Your game responses will appear here...'}
+        {isLoading ? (
+          <div className="text-center text-gray-600">Loading scenarios...</div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2">
+            {scenarios.map((scenario) => (
+              <Link
+                key={scenario.id}
+                href={`/${scenario.id}`}
+                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+              >
+                <h2 className="text-2xl font-semibold mb-3 text-gray-800">
+                  {scenario.title}
+                </h2>
+                <p className="text-gray-600 leading-relaxed">
+                  {scenario.description}
+                </p>
+                <div className="mt-4 text-blue-600 font-semibold">
+                  Start Adventure →
+                </div>
+              </Link>
+            ))}
           </div>
-        </div>
-
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">Input</h2>
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit(e);
-              }
-            }}
-            placeholder="Enter your command (e.g., 'I look around, what do I see?')"
-            className="w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={4}
-            disabled={isLoading}
-            autoComplete="off"
-          />
-          <button
-            type="submit"
-            disabled={isLoading || !input.trim()}
-            className="mt-4 w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          >
-            {isLoading ? 'Processing...' : 'Submit'}
-          </button>
-        </form>
+        )}
       </div>
     </div>
   );
