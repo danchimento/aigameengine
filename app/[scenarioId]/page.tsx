@@ -16,6 +16,7 @@ export default function ScenarioPage() {
   const [output, setOutput] = useState('');
   const [conversationHistory, setConversationHistory] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [fadeKey, setFadeKey] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -75,10 +76,12 @@ export default function ScenarioPage() {
         const assistantMessage: Message = { role: 'assistant', content: data.message };
         setConversationHistory([...updatedHistory, assistantMessage]);
 
-        // Display only the most recent output
+        // Display only the most recent output with fade animation
         setOutput(data.message);
+        setFadeKey(prev => prev + 1);
       } else {
         setOutput('Error: ' + (data.error || 'Unknown error'));
+        setFadeKey(prev => prev + 1);
       }
     } catch (error) {
       setOutput('Error: Failed to communicate with the game engine');
@@ -89,24 +92,20 @@ export default function ScenarioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
-          AI Game Engine
-        </h1>
-        <p className="text-center text-gray-600 mb-4">
-          Scenario: {scenarioId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-        </p>
-
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">Output</h2>
-          <div className="bg-gray-50 p-4 rounded min-h-[200px] whitespace-pre-wrap">
-            {output || 'Your game responses will appear here...'}
+    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6">
+      <div className="w-full max-w-[900px] h-[calc(100vh-3rem)] flex flex-col gap-6">
+        {/* Output Area */}
+        <div
+          key={fadeKey}
+          className="bg-neutral-900/50 border border-neutral-800 rounded-lg p-6 flex-1 flex items-center justify-center animate-fadeIn overflow-y-auto"
+        >
+          <div className="text-neutral-100 text-base leading-relaxed whitespace-pre-wrap max-w-prose font-mono">
+            {output || 'Loading...'}
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">Input</h2>
+        {/* Input Area */}
+        <form onSubmit={handleSubmit} className="space-y-4 flex-shrink-0">
           <textarea
             ref={textareaRef}
             value={input}
@@ -117,18 +116,18 @@ export default function ScenarioPage() {
                 handleSubmit(e);
               }
             }}
-            placeholder="Enter your command (e.g., 'I look around, what do I see?')"
-            className="w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={4}
+            placeholder="What do you do?"
+            className="w-full p-4 bg-neutral-900 border border-neutral-800 rounded-lg resize-none focus:outline-none focus:border-neutral-700 text-neutral-100 placeholder-neutral-500 font-mono"
+            rows={3}
             disabled={isLoading}
             autoComplete="off"
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="mt-4 w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-neutral-100 text-neutral-900 py-3 px-6 rounded-lg font-medium hover:bg-white disabled:bg-neutral-800 disabled:text-neutral-600 disabled:cursor-not-allowed transition-colors duration-150"
           >
-            {isLoading ? 'Processing...' : 'Submit'}
+            {isLoading ? 'Thinking...' : 'Continue'}
           </button>
         </form>
       </div>
