@@ -2,7 +2,7 @@
 
 ## Opening
 
-You wake up in a small room with no memory of how you got here. There is a door, a box, a light switch on the wall, and a chair.
+You wake up in a small room with no memory of how you got here...
 
 ## World Rules
 
