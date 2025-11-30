@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'AI Game Engine',
+  title: 'What do you want to do?',
   description: 'A text-based AI game engine',
 };
 

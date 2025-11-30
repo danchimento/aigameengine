@@ -35,7 +35,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-4 text-center text-gray-800">
-          AI Game Engine
+          What do you want to do?
         </h1>
         <p className="text-center text-gray-600 mb-12">
           Choose a scenario to begin your adventure

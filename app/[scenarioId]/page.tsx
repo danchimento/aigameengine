@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type Message = {
   role: 'user' | 'assistant';
@@ -18,7 +19,6 @@ export default function ScenarioPage() {
   const [title, setTitle] = useState('');
   const [conversationHistory, setConversationHistory] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [fadeKey, setFadeKey] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -59,6 +59,7 @@ export default function ScenarioPage() {
 
     setIsLoading(true);
     setLastUserInput(input);
+    setInput('');
 
     // Add user message to conversation history
     const userMessage: Message = { role: 'user', content: input };
@@ -92,8 +93,6 @@ export default function ScenarioPage() {
       setOutput('Error: Failed to communicate with the game engine');
     } finally {
       setIsLoading(false);
-      setFadeKey(prev => prev + 1);
-      setInput('');
     }
   };
 
@@ -102,16 +101,29 @@ export default function ScenarioPage() {
       <div className="w-full max-w-[900px] h-[calc(100vh-3rem)] flex flex-col gap-6">
         {/* Output Area */}
         <div className="bg-neutral-900/50 border border-neutral-800 rounded-lg p-6 flex-1 flex items-center justify-center overflow-y-auto">
-          <div
-            key={fadeKey}
-            className={`max-w-prose w-full ${isLoading ? 'animate-fadeOut' : 'animate-fadeIn'}`}
-          >
+          <AnimatePresence mode="wait">
             {isLoading ? (
-              <div className="text-neutral-500 text-base font-mono text-center">
-                ...
-              </div>
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="max-w-prose w-full"
+              >
+                <div className="text-neutral-500 text-base font-mono text-center">
+                  ...
+                </div>
+              </motion.div>
             ) : (
-              <>
+              <motion.div
+                key="content"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="max-w-prose w-full"
+              >
                 {lastUserInput && (
                   <div className="text-neutral-500 text-sm font-mono mb-4">
                     &gt; {lastUserInput}
@@ -120,9 +132,9 @@ export default function ScenarioPage() {
                 <div className="text-neutral-100 text-base leading-relaxed whitespace-pre-wrap font-mono">
                   {output || 'Loading...'}
                 </div>
-              </>
+              </motion.div>
             )}
-          </div>
+          </AnimatePresence>
         </div>
 
         {/* Input Area */}
@@ -137,7 +149,7 @@ export default function ScenarioPage() {
                 handleSubmit(e);
               }
             }}
-            placeholder="What do you do?"
+            placeholder="What do you want to do?"
             className="w-full p-4 bg-neutral-900 border border-neutral-800 rounded-lg resize-none focus:outline-none focus:border-neutral-700 text-neutral-100 placeholder-neutral-500 font-mono"
             rows={3}
             disabled={isLoading}
