@@ -29,7 +29,9 @@
       "Bash(gh repo edit:*)",
       "Bash(gh api:*)",
       "Bash(gh repo view:*)",
-      "Bash(xargs kill:*)"
+      "Bash(xargs kill:*)",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebFetch(domain:saricden.com)"
     ],
     "deny": [],
     "ask": []
