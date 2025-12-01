@@ -20,7 +20,6 @@ export default function ScenarioPage() {
   const [conversationHistory, setConversationHistory] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const inputAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Load the opening text when the page first loads
@@ -52,34 +51,6 @@ export default function ScenarioPage() {
       textareaRef.current?.focus();
     }
   }, [isLoading]);
-
-  // Handle iOS keyboard - position input at bottom of visual viewport
-  useEffect(() => {
-    const inputArea = inputAreaRef.current;
-    if (!inputArea) return;
-
-    const handleViewportChange = () => {
-      if (window.visualViewport) {
-        const vv = window.visualViewport;
-        // Position input area at the bottom of the visual viewport
-        // Using top + translateY(-100%) trick from saricden.com
-        inputArea.style.top = `${vv.offsetTop + vv.height}px`;
-      }
-    };
-
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleViewportChange);
-      window.visualViewport.addEventListener('scroll', handleViewportChange);
-      handleViewportChange();
-    }
-
-    return () => {
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', handleViewportChange);
-        window.visualViewport.removeEventListener('scroll', handleViewportChange);
-      }
-    };
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,9 +97,9 @@ export default function ScenarioPage() {
   };
 
   return (
-    <div className="h-screen bg-neutral-950 flex flex-col overflow-hidden pt-[env(safe-area-inset-top)]">
-      {/* Output Area - fills available space, scrolls if needed */}
-      <div className="flex-1 flex flex-col p-4 md:p-6 pb-20 overflow-y-auto">
+    <div className="min-h-screen bg-neutral-950 flex flex-col">
+      {/* Output Area - fills available space, grows if needed */}
+      <div className="flex-1 flex flex-col p-4 md:p-6 pb-0">
         <div className="max-w-[900px] mx-auto w-full flex-1 flex flex-col min-h-0">
           <div className="bg-neutral-900/50 border border-neutral-800 rounded-lg p-4 md:p-6 flex-1 flex items-center justify-center">
             <AnimatePresence mode="wait">
@@ -169,11 +140,8 @@ export default function ScenarioPage() {
         </div>
       </div>
 
-      {/* Input Area - fixed, positioned via JS for iOS keyboard */}
-      <div
-        ref={inputAreaRef}
-        className="fixed left-0 right-0 bg-neutral-950 border-t border-neutral-800 p-3 md:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] transform -translate-y-full"
-      >
+      {/* Input Area */}
+      <div className="bg-neutral-950 border-t border-neutral-800 p-3 md:p-4">
         <form onSubmit={handleSubmit} className="max-w-[900px] mx-auto">
           <div className="relative flex items-end bg-neutral-900 border border-neutral-800 rounded-lg focus-within:border-neutral-700 transition-colors">
             <textarea

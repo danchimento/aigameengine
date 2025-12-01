@@ -1,8 +1,1 @@
 @import "tailwindcss";
-
-/* iOS Safari fixes */
-html, body {
-  height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
-}
