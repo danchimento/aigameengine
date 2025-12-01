@@ -97,71 +97,94 @@ export default function ScenarioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6">
-      <div className="w-full max-w-[900px] h-[calc(100vh-3rem)] flex flex-col gap-6">
-        {/* Output Area */}
-        <div className="bg-neutral-900/50 border border-neutral-800 rounded-lg p-6 flex-1 flex items-center justify-center overflow-y-auto">
-          <AnimatePresence mode="wait">
-            {isLoading ? (
-              <motion.div
-                key="loading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className="max-w-prose w-full"
-              >
-                <div className="text-neutral-500 text-base font-mono text-center">
-                  ...
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="content"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className="max-w-prose w-full"
-              >
-                {lastUserInput && (
-                  <div className="text-neutral-500 text-sm font-mono mb-4">
-                    &gt; {lastUserInput}
+    <div className="min-h-screen bg-neutral-950 flex flex-col">
+      {/* Output Area - fills available space, grows if needed */}
+      <div className="flex-1 flex flex-col p-4 md:p-6 pb-0">
+        <div className="max-w-[900px] mx-auto w-full flex-1 flex flex-col min-h-0">
+          <div className="bg-neutral-900/50 border border-neutral-800 rounded-lg p-4 md:p-6 flex-1 flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              {isLoading ? (
+                <motion.div
+                  key="loading"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="max-w-prose w-full"
+                >
+                  <div className="text-neutral-500 text-base font-mono text-center">
+                    ...
                   </div>
-                )}
-                <div className="text-neutral-100 text-base leading-relaxed whitespace-pre-wrap font-mono">
-                  {output || 'Loading...'}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="content"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="max-w-prose w-full"
+                >
+                  {lastUserInput && (
+                    <div className="text-neutral-500 text-sm font-mono mb-4">
+                      &gt; {lastUserInput}
+                    </div>
+                  )}
+                  <div className="text-neutral-100 text-base leading-relaxed whitespace-pre-wrap font-mono">
+                    {output || 'Loading...'}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
+      </div>
 
-        {/* Input Area */}
-        <form onSubmit={handleSubmit} className="space-y-4 flex-shrink-0">
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit(e);
-              }
-            }}
-            placeholder="What do you want to do?"
-            className="w-full p-4 bg-neutral-900 border border-neutral-800 rounded-lg resize-none focus:outline-none focus:border-neutral-700 text-neutral-100 placeholder-neutral-500 font-mono"
-            rows={3}
-            disabled={isLoading}
-            autoComplete="off"
-          />
-          <button
-            type="submit"
-            disabled={isLoading || !input.trim()}
-            className="w-full bg-neutral-100 text-neutral-900 py-3 px-6 rounded-lg font-medium hover:bg-white disabled:bg-neutral-800 disabled:text-neutral-600 disabled:cursor-not-allowed transition-colors duration-150"
-          >
-            {isLoading ? 'Thinking...' : 'Continue'}
-          </button>
+      {/* Input Area - sticky at bottom */}
+      <div className="sticky bottom-0 bg-neutral-950 border-t border-neutral-800 p-3 md:p-4">
+        <form onSubmit={handleSubmit} className="max-w-[900px] mx-auto">
+          <div className="relative flex items-end bg-neutral-900 border border-neutral-800 rounded-lg focus-within:border-neutral-700 transition-colors">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => {
+                setInput(e.target.value);
+                // Auto-resize textarea
+                e.target.style.height = 'auto';
+                const lineHeight = 24;
+                const maxHeight = lineHeight * 4;
+                e.target.style.height = Math.min(e.target.scrollHeight, maxHeight) + 'px';
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
+              placeholder="What do you want to do?"
+              className="flex-1 py-3 pl-4 pr-2 bg-transparent resize-none focus:outline-none text-neutral-100 placeholder-neutral-500 font-mono text-base leading-6 max-h-24 overflow-y-auto align-middle"
+              rows={1}
+              disabled={isLoading}
+              autoComplete="off"
+            />
+            <button
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              className="m-2 bg-neutral-100 text-neutral-900 p-2 rounded-md font-medium hover:bg-white disabled:bg-neutral-700 disabled:text-neutral-500 disabled:cursor-not-allowed transition-colors duration-150 flex-shrink-0"
+              aria-label={isLoading ? 'Thinking...' : 'Continue'}
+            >
+              {isLoading ? (
+                <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>
