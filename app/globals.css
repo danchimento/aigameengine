@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+:root {
+  --viewport-height: 100dvh;
+}
+
+/* iOS Safari viewport fix */
+html, body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* Use dynamic viewport height for iOS - falls back to dvh, then uses JS-set value */
+.min-h-screen-dynamic {
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: var(--viewport-height, 100dvh);
+}
+
+.h-screen-dynamic {
+  height: 100vh;
+  height: 100dvh;
+  height: var(--viewport-height, 100dvh);
+}

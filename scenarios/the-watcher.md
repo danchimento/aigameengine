@@ -1,4 +1,4 @@
-# The Watcher's Room
+# The Watcher
 
 ## Opening
 
@@ -29,8 +29,7 @@ This world operates under normal physical rules except where magical properties 
 - Three blank pieces of paper scattered in different locations
 - Magically resistant: cannot be marked, torn, burned, or destroyed in any way
 - Can be picked up and carried
-- CAN be eaten (but this traps the player permanently—they cannot win)
-- Must all three be glued together to form the "book"
+- All three pages must be glued together to form the "book"
 - The player must explicitly use the glue on the pages (pressing, combining, or pushing pages together without mentioning glue does NOT work)
 
 ### Glue

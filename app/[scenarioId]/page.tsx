@@ -52,6 +52,33 @@ export default function ScenarioPage() {
     }
   }, [isLoading]);
 
+  // Handle iOS keyboard viewport adjustments
+  useEffect(() => {
+    const handleViewportResize = () => {
+      if (window.visualViewport) {
+        const viewport = window.visualViewport;
+        // Scroll to keep input visible when keyboard opens
+        document.documentElement.style.setProperty(
+          '--viewport-height',
+          `${viewport.height}px`
+        );
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleViewportResize);
+      window.visualViewport.addEventListener('scroll', handleViewportResize);
+      handleViewportResize();
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleViewportResize);
+        window.visualViewport.removeEventListener('scroll', handleViewportResize);
+      }
+    };
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -97,9 +124,9 @@ export default function ScenarioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex flex-col">
-      {/* Output Area - fills available space, grows if needed */}
-      <div className="flex-1 flex flex-col p-4 md:p-6 pb-0">
+    <div className="h-screen-dynamic bg-neutral-950 flex flex-col overflow-hidden pt-[env(safe-area-inset-top)]">
+      {/* Output Area - fills available space, scrolls if needed */}
+      <div className="flex-1 flex flex-col p-4 md:p-6 pb-0 overflow-y-auto">
         <div className="max-w-[900px] mx-auto w-full flex-1 flex flex-col min-h-0">
           <div className="bg-neutral-900/50 border border-neutral-800 rounded-lg p-4 md:p-6 flex-1 flex items-center justify-center">
             <AnimatePresence mode="wait">
@@ -140,8 +167,8 @@ export default function ScenarioPage() {
         </div>
       </div>
 
-      {/* Input Area - sticky at bottom */}
-      <div className="sticky bottom-0 bg-neutral-950 border-t border-neutral-800 p-3 md:p-4">
+      {/* Input Area - fixed at bottom with safe area */}
+      <div className="flex-shrink-0 bg-neutral-950 border-t border-neutral-800 p-3 md:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <form onSubmit={handleSubmit} className="max-w-[900px] mx-auto">
           <div className="relative flex items-end bg-neutral-900 border border-neutral-800 rounded-lg focus-within:border-neutral-700 transition-colors">
             <textarea
