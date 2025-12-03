@@ -31,7 +31,9 @@
       "Bash(gh repo view:*)",
       "Bash(xargs kill:*)",
       "WebFetch(domain:stackoverflow.com)",
-      "WebFetch(domain:saricden.com)"
+      "WebFetch(domain:saricden.com)",
+      "Bash(npm run build:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []

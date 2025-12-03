@@ -11,8 +11,10 @@ export async function GET() {
       return NextResponse.json({ scenarios: [] });
     }
 
-    // Read all .md files from scenarios directory
-    const files = fs.readdirSync(scenariosDir).filter(file => file.endsWith('.md'));
+    // Read all .md files from scenarios directory, excluding TEMPLATE.md
+    const files = fs.readdirSync(scenariosDir).filter(
+      file => file.endsWith('.md') && file !== 'TEMPLATE.md'
+    );
 
     // Parse each scenario file to extract title and description
     const scenarios = files.map(file => {

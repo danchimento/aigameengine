@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type Message = {
@@ -11,7 +11,10 @@ type Message = {
 
 export default function ScenarioPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const scenarioId = params.scenarioId as string;
+  const tone = searchParams.get('t') || 'sarcastic';
+  const model = searchParams.get('m') || 'sonnet';
 
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
@@ -74,6 +77,8 @@ export default function ScenarioPage() {
         body: JSON.stringify({
           messages: updatedHistory,
           scenarioId,
+          tone,
+          model,
         }),
       });
 

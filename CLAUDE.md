@@ -2,6 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Working on New Features
+
+**IMPORTANT**: For any feature request beyond trivial changes, do NOT immediately start writing code. Instead:
+
+1. **Explore first** - Read relevant existing code to understand current patterns and architecture
+2. **Ask clarifying questions** - Before planning, ask the user about:
+   - Specific requirements or preferences
+   - Edge cases they've considered
+   - Integration points with existing features
+   - Any constraints or non-goals
+3. **Propose a plan** - Outline the approach and get user buy-in before implementation
+4. **Then implement** - Only after understanding and agreement, write the code
+
+Trivial changes (bug fixes with obvious solutions, small tweaks, config changes) can proceed directly.
+
 ## Project Overview
 
 AI Game Engine is a text-based interactive game powered by OpenAI's GPT-4 Turbo. The game uses a configurable system prompt composed of engine rules and scenario definitions to create dynamic, AI-driven gameplay experiences.
@@ -80,3 +95,37 @@ OPENAI_API_KEY=your_api_key_here
 - Path resolution uses process.cwd() to ensure files are read from project root
 - Model hardcoded to 'gpt-4-turbo' in app/api/game/route.ts:26
 - TypeScript strict mode enabled in tsconfig.json
+
+## Scenario Template Maintenance
+
+**IMPORTANT**: When making structural changes to scenario files, you MUST update `scenarios/TEMPLATE.md` to reflect those changes.
+
+### Template Structure
+
+The scenario template (`scenarios/TEMPLATE.md`) defines the canonical structure for all scenarios:
+
+1. **Title** (`# [Scenario Title]`) - The scenario name
+2. **Opening** (`## Opening`) - Initial scene shown to player (only immediately visible things)
+3. **World Rules** (`## World Rules`) - Physics/magic rules governing the world
+4. **Objects and Special Properties** (`## Objects and Special Properties`) - Each object as `### [Object Name]` with behaviors
+5. **Characters** (`## Characters`) - Optional: NPCs with dialogue and behavior rules
+6. **Hidden Information** (`## Hidden Information`) - What the engine should NOT reveal until explicitly discovered
+7. **Main Puzzles** (`## Main Puzzles`) - Optional: Core discoveries to avoid hinting at
+8. **Win Condition** (`## Win Condition`) - How the player wins
+9. **Edge Cases** (`## Edge Cases`) - Optional: Special situations
+
+### When to Update the Template
+
+Update `scenarios/TEMPLATE.md` whenever you:
+- Add a new section type to a scenario
+- Change the naming convention of existing sections
+- Add new required fields or properties
+- Modify how objects, characters, or puzzles should be documented
+
+### How to Update
+
+1. Make your changes to the actual scenario file(s)
+2. Update `scenarios/TEMPLATE.md` to include the new section/field with:
+   - A clear heading
+   - Placeholder text in `[brackets]` explaining what goes there
+   - Example values or guidance where helpful

@@ -46,7 +46,8 @@ This world operates under normal physical rules except where magical properties 
 - He is surprisingly agile and deflects all physical contact without acknowledging it
 - Describe failed attacks/advances creatively with mystical undertones (attacks pass through him, he's suddenly not where he was, etc.)
 - Does not speak coherently—only cryptic, gloomy statements
-- BEFORE the book is assembled, his statements revolve around: "he came," "we didn't expect him," "he took it," "he took the cover," "he stole it," variations on loss and unexpected theft
+- BEFORE the book is assembled, his statements revolve around: "he came," "we didn't expect him," "he took it," "he took it," "he stole it," variations on loss and unexpected theft
+- He never mentions "the cover" or "the book" - that's the main puzzle
 - Never mentions the glue directly
 - Never reveals anything specific or useful through conversation
 - NEVER hints that the blank pages are from the book or related to it—this is the main puzzle
