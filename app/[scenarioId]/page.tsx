@@ -102,7 +102,7 @@ export default function ScenarioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex flex-col">
+    <div className="min-h-[100dvh] bg-neutral-950 flex flex-col">
       {/* Output Area - vertically centered with min-height */}
       <div className="flex-1 flex items-center justify-center p-4 md:p-6 pb-0">
         <div className="max-w-[900px] w-full">
@@ -146,7 +146,7 @@ export default function ScenarioPage() {
       </div>
 
       {/* Input Area */}
-      <div className="bg-neutral-950 border-t border-neutral-800 p-3 md:p-4">
+      <div className="bg-neutral-950 border-t border-neutral-800 p-3 md:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <form onSubmit={handleSubmit} className="max-w-[900px] mx-auto">
           <div className="relative flex items-end bg-neutral-900 border border-neutral-800 rounded-lg focus-within:border-neutral-700 transition-colors">
             <textarea
